@@ -1,19 +1,19 @@
-# I3 rainSlop 
+# Rushed-i3-rainslop-rice
 
-A clean, customizable i3 window manager setup ("rice") with automated multi-distro installation scripts.
-
+A i3 rainy rice with automated multi distro installation scripts.
+(this was mainly made for laptops)
 ---
 
 ## Everything in here
 
-* **Window Manager:** i3-wm
-* **Bar:** Polybar (with CPU, RAM, Battery, Audio, Network, and Date modules)
+* **Window Manager:** i3
+* **Bar:** Polybar (with CPU, RAM, battery, audio, network, and Date modules)
 * **Compositor:** Picom (compositor)
-* **App Launcher:** Rofi (custom translucent theme with mouse hover support)
+* **App Launcher:** Rofi (app launcher and mouse hover support)
 * **Terminal:** Kitty
-* **Tiling :** [Autotiling](https://github.com/nwg-piotr/autotiling) (automatic tiling)
+* **Tiling Helper:** [Autotiling](https://github.com/nwg-piotr/autotiling) (automatic tiling)
 * **Audio:** PipeWire and WirePlumber
-* **Other:** `brightnessctl`, `feh` (wallpaper manager), `wallpaper-picker` shortcut
+* **Utilities:** `brightnessctl`, `feh` (wallpaper manager), `wallpaper-picker` shortcut
 
 ---
 
@@ -21,8 +21,8 @@ A clean, customizable i3 window manager setup ("rice") with automated multi-dist
 
 ### 1. Clone the repo
 ```bash
-git clone https://github.com/<YOUR-USERNAME>/I3_RainSlop.git
-cd I3_RainSlop
+git clone https://github.com/redrandomcoreguy/Rushed-i3-rainslop-rice.git
+cd Rushed-i3-rainslop-rice
 ```
 
 ### 2. Make executable and run the installer
@@ -30,10 +30,9 @@ cd I3_RainSlop
 chmod +x install_rice.sh
 ./install_rice.sh
 ```
-*(Or simply run: `bash install_rice.sh`)*
 
-The script automatically detects your distribution (Arch, Debian/Ubuntu, Fedora) and:
-1. Installs all required packages and dependencies via your system package manager.
+The script automatically detects your distro (arch, debian/ubuntu, fedora) and:
+1. Installs all required packages and dependencies via your package manager.
 2. Clones and sets up `autotiling`.
 3. Copies configuration files to `~/.config/`.
 4. Installs desktop shortcuts to `~/.local/share/applications/`.
@@ -77,11 +76,11 @@ The script automatically detects your distribution (Arch, Debian/Ubuntu, Fedora)
 | `$mod + 1` ... `$mod + 9` | Switch to Workspace 1 – 9 |
 | `$mod + Shift + 1` ... `$mod + Shift + 9` | Move focused window to Workspace 1 – 9 |
 
-### Kitty Terminal Shortcuts
+### Terminal shortcuts
 | Keybinding | Action |
 | :--- | :--- |
 | `Ctrl + Shift + a` | Open new Kitty window / split |
 | `Ctrl + Shift + s` | Close current Kitty window |
 
-### 📊 Polybar Actions
+### Other actions
 * **Volume Icon / Label:** Right-click opens `pavucontrol` (audio control panel).
