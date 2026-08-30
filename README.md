@@ -13,7 +13,8 @@ A i3 rainy rice with automated multi distro installation scripts.
 * **Terminal:** Kitty
 * **Tiling Helper:** [Autotiling](https://github.com/nwg-piotr/autotiling) (automatic tiling)
 * **Audio:** PipeWire and WirePlumber
-* **Utilities:** `brightnessctl`, `feh` (wallpaper manager), `wallpaper-picker` shortcut
+* **Utilities:** `brightnessctl`, `feh` (wallpaper manager)
+* **Wallpaper picker** Comes with a working wallpaper picker (Wallpapers are stored in ~/.config/i3/Wallpaperconfig/Wallpapers)
 
 ---
 
@@ -85,4 +86,5 @@ The script automatically detects your distro (arch, debian/ubuntu, fedora) and:
 | `Ctrl + Shift + s` | Close current Kitty window |
 
 ### Other actions
-* **Volume Icon / Label:** Right-click opens `pavucontrol` (audio control panel).
+* **Volume Icon:** Right-click opens `pavucontrol` (audio control panel).
+* **Wallpaper Picker** The main script is stored in ~/.config/i3/Wallpaperconfig/rofi-wallpaper.sh if you would like to edit it.
