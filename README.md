@@ -1,4 +1,4 @@
-# I3_RainSlop 🌧️
+# I3 rainSlop 
 
 A clean, customizable i3 window manager setup ("rice") with automated multi-distro installation scripts.
 
