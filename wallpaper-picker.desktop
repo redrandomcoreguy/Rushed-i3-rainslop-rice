@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Wallpaper Picker
+Comment=Choose a wallpaper using Rofi
+Exec=bash -c "$HOME/.config/i3/Wallpaperconfig/rofi-wallpaper.sh"
+Terminal=false
+Categories=Utility;
+Icon=preferences-desktop-wallpaper
