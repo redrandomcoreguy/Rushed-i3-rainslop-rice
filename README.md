@@ -30,6 +30,8 @@ cd Rushed-i3-rainslop-rice
 chmod +x install_rice.sh
 ./install_rice.sh
 ```
+## Once installed you are able to delete the folder in your home directory. 
+
 
 The script automatically detects your distro (arch, debian/ubuntu, fedora) and:
 1. Installs all required packages and dependencies via your package manager.
