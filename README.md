@@ -31,8 +31,7 @@ cd Rushed-i3-rainslop-rice
 chmod +x install_rice.sh
 ./install_rice.sh
 ```
-## Once installed you are able to delete the folder in your home directory. 
-
+**Once installed you are able to delete the folder in your home directory.** 
 
 The script automatically detects your distro (arch, debian/ubuntu, fedora) and:
 1. Installs all required packages and dependencies via your package manager.
@@ -84,7 +83,8 @@ The script automatically detects your distro (arch, debian/ubuntu, fedora) and:
 | :--- | :--- |
 | `Ctrl + Shift + a` | Open new Kitty window / split |
 | `Ctrl + Shift + s` | Close current Kitty window |
-
+| `Ctrl + C` | Copies a selected text |
+| `Ctrl + v` | Pastes copied text |
 ### Other actions
 * **Volume Icon:** Right-click opens `pavucontrol` (audio control panel).
 * **Wallpaper Picker** The main script is stored in ~/.config/i3/Wallpaperconfig/rofi-wallpaper.sh if you would like to edit it.
