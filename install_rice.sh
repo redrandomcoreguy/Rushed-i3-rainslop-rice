@@ -2,84 +2,80 @@
 
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
+RED='\033[0;31m'
 NC='\033[0m'
 
-echo -e "${BLUE}Starting the Rushed-i3-rainslop-rice Installation Script...${NC}"
+echo -e "${BLUE}Starting...${NC}"
 
-if [ -f /etc/os-release ]; then
-    . /etc/os-release
-    OS=$ID
-    LIKE=$ID_LIKE
+if command -v pacman &> /dev/null; then
+    PKG_MGR="pacman"
+elif command -v apt-get &> /dev/null; then
+    PKG_MGR="apt"
+elif command -v dnf &> /dev/null; then
+    PKG_MGR="dnf"
+elif command -v zypper &> /dev/null; then
+    PKG_MGR="zypper"
+elif command -v xbps-install &> /dev/null; then
+    PKG_MGR="xbps"
 else
-    echo "Cannot detect OS. Exiting."
-    exit 1
+    PKG_MGR="unknown"
 fi
 
-echo -e "${GREEN}Detected OS: $OS${NC}"
-
-APT_DEPS="i3 picom polybar rofi kitty pipewire pipewire-pulse brightnessctl feh python3-pip git fonts-jetbrains-mono"
-PACMAN_DEPS="i3-wm picom polybar rofi kitty pipewire pipewire-pulse brightnessctl feh python-pip git ttf-jetbrains-mono-nerd"
-DNF_DEPS="i3 picom polybar rofi kitty pipewire pipewire-pulseaudio brightnessctl feh python3-pip git jetbrains-mono-fonts-all"
+echo -e "${GREEN}Detected Package Manager: $PKG_MGR${NC}"
 
 install_autotiling() {
     echo -e "${BLUE}Installing Autotiling...${NC}"
     if ! command -v autotiling &> /dev/null; then
-        echo -e "${BLUE}Cloning Autotiling...${NC}"
         TMP_DIR=$(mktemp -d)
-        git clone https://github.com/nwg-piotr/autotiling $TMP_DIR/autotiling
-        
-        mkdir -p ~/.local/bin
-        cp $TMP_DIR/autotiling/autotiling/main.py ~/.local/bin/autotiling
-        chmod +x ~/.local/bin/autotiling
-        rm -rf $TMP_DIR
-    else
-        echo "Autotiling is already installed."
+        git clone https://github.com/nwg-piotr/autotiling "$TMP_DIR/autotiling"
+        mkdir -p "$HOME/.local/bin"
+        cp "$TMP_DIR/autotiling/autotiling/main.py" "$HOME/.local/bin/autotiling"
+        chmod +x "$HOME/.local/bin/autotiling"
+        rm -rf "$TMP_DIR"
     fi
 }
 
-install_i3ipc() {
-    echo -e "${BLUE}Installing python-i3ipc...${NC}"
-    if [[ "$OS" == "arch" || "$LIKE" == *"arch"* ]]; then
-        sudo pacman -S --needed --noconfirm python-i3ipc
-    elif [[ "$OS" == "debian" || "$OS" == "ubuntu" || "$LIKE" == *"debian"* ]]; then
-        sudo apt-get install -y python3-i3ipc
-    elif [[ "$OS" == "fedora" || "$LIKE" == *"fedora"* ]]; then
-        sudo dnf install -y python3-i3ipc
-    else
-        echo -e "Could not find package for python-i3ipc. Install manually via pip3."
-    fi
-}
-
-if [[ "$OS" == "arch" || "$LIKE" == *"arch"* ]]; then
-    echo -e "${BLUE}Installing packages using pacman...${NC}"
-    sudo pacman -Syu --noconfirm
-    sudo pacman -S --needed --noconfirm $PACMAN_DEPS
-    
-    install_i3ipc
-    
-    if command -v paru &> /dev/null; then
-        paru -S --needed --noconfirm autotiling
-    elif command -v yay &> /dev/null; then
-        yay -S --needed --noconfirm autotiling
-    else
+case "$PKG_MGR" in
+    pacman)
+        echo -e "${BLUE}Installing packages via pacman...${NC}"
+        sudo pacman -Syu --noconfirm
+        sudo pacman -S --needed --noconfirm i3-wm picom polybar rofi kitty pipewire pipewire-pulse brightnessctl feh python-pip python-i3ipc git ttf-jetbrains-mono-nerd
+        if command -v paru &> /dev/null; then
+            paru -S --needed --noconfirm autotiling
+        elif command -v yay &> /dev/null; then
+            yay -S --needed --noconfirm autotiling
+        else
+            install_autotiling
+        fi
+        ;;
+    apt)
+        echo -e "${BLUE}Installing packages via apt...${NC}"
+        sudo apt-get update
+        sudo apt-get install -y i3 picom polybar rofi kitty pipewire pipewire-pulse brightnessctl feh python3-pip python3-i3ipc git fonts-jetbrains-mono
         install_autotiling
-    fi
-
-elif [[ "$OS" == "debian" || "$OS" == "ubuntu" || "$LIKE" == *"debian"* ]]; then
-    echo -e "${BLUE}Installing packages using apt...${NC}"
-    sudo apt-get update
-    sudo apt-get install -y $APT_DEPS
-    install_i3ipc
-    install_autotiling
-
-elif [[ "$OS" == "fedora" || "$LIKE" == *"fedora"* ]]; then
-    echo -e "${BLUE}Installing packages using dnf...${NC}"
-    sudo dnf install -y $DNF_DEPS
-    install_i3ipc
-    install_autotiling
-else
-    echo "Unsupported distribution. Please install dependencies manually."
-fi
+        ;;
+    dnf)
+        echo -e "${BLUE}Installing packages via dnf...${NC}"
+        sudo dnf install -y i3 picom polybar rofi kitty pipewire pipewire-pulseaudio brightnessctl feh python3-pip python3-i3ipc git jetbrains-mono-fonts-all
+        install_autotiling
+        ;;
+    zypper)
+        echo -e "${BLUE}Installing packages via zypper...${NC}"
+        sudo zypper refresh
+        sudo zypper install -y i3 picom polybar rofi kitty pipewire pipewire-pulseaudio brightnessctl feh python3-pip python3-i3ipc git jetbrains-mono-fonts
+        install_autotiling
+        ;;
+    xbps)
+        echo -e "${BLUE}Installing packages via xbps...${NC}"
+        sudo xbps-install -S i3 picom polybar rofi kitty pipewire pipewire-pulse brightnessctl feh python3-pip python3-i3ipc git nerd-fonts
+        install_autotiling
+        ;;
+    *)
+        echo -e "${RED}Unsupported package manager. Please install dependencies manually:${NC}"
+        echo "i3, picom, polybar, rofi, kitty, pipewire, brightnessctl, feh, autotiling, JetBrains Mono font"
+        install_autotiling
+        ;;
+esac
 
 echo -e "${BLUE}Copying configuration files...${NC}"
 
@@ -95,6 +91,9 @@ fi
 
 for dir in i3 kitty picom polybar rofi; do
     if [ -d "$RICE_DIR/$dir" ]; then
+        if [ -d "$CONFIG_DIR/$dir" ] && [ ! -w "$CONFIG_DIR/$dir" ]; then
+            sudo chown -R $USER:$USER "$CONFIG_DIR/$dir" 2>/dev/null || true
+        fi
         cp -r "$RICE_DIR/$dir" "$CONFIG_DIR/"
     fi
 done
