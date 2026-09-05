@@ -5,7 +5,15 @@ BLUE='\033[0;34m'
 RED='\033[0;31m'
 NC='\033[0m'
 
-echo -e "${BLUE}Starting...${NC}"
+echo -e "${BLUE}Starting${NC}"
+
+if command -v sudo &> /dev/null; then
+    SUDO="sudo"
+elif command -v doas &> /dev/null; then
+    SUDO="doas"
+else
+    SUDO=""
+fi
 
 if command -v pacman &> /dev/null; then
     PKG_MGR="pacman"
@@ -17,6 +25,8 @@ elif command -v zypper &> /dev/null; then
     PKG_MGR="zypper"
 elif command -v xbps-install &> /dev/null; then
     PKG_MGR="xbps"
+elif command -v apk &> /dev/null; then
+    PKG_MGR="apk"
 else
     PKG_MGR="unknown"
 fi
@@ -38,8 +48,8 @@ install_autotiling() {
 case "$PKG_MGR" in
     pacman)
         echo -e "${BLUE}Installing packages via pacman...${NC}"
-        sudo pacman -Syu --noconfirm
-        sudo pacman -S --needed --noconfirm i3-wm picom polybar rofi kitty pipewire pipewire-pulse brightnessctl feh python-pip python-i3ipc git ttf-jetbrains-mono-nerd
+        $SUDO pacman -Syu --noconfirm
+        $SUDO pacman -S --needed --noconfirm i3-wm picom polybar rofi kitty pipewire pipewire-pulse brightnessctl feh python-pip python-i3ipc git ttf-jetbrains-mono-nerd
         if command -v paru &> /dev/null; then
             paru -S --needed --noconfirm autotiling
         elif command -v yay &> /dev/null; then
@@ -50,24 +60,31 @@ case "$PKG_MGR" in
         ;;
     apt)
         echo -e "${BLUE}Installing packages via apt...${NC}"
-        sudo apt-get update
-        sudo apt-get install -y i3 picom polybar rofi kitty pipewire pipewire-pulse brightnessctl feh python3-pip python3-i3ipc git fonts-jetbrains-mono
+        $SUDO apt-get update
+        $SUDO apt-get install -y i3 picom polybar rofi kitty pipewire pipewire-pulse brightnessctl feh python3-pip python3-i3ipc git fonts-jetbrains-mono
         install_autotiling
         ;;
     dnf)
         echo -e "${BLUE}Installing packages via dnf...${NC}"
-        sudo dnf install -y i3 picom polybar rofi kitty pipewire pipewire-pulseaudio brightnessctl feh python3-pip python3-i3ipc git jetbrains-mono-fonts-all
+        $SUDO dnf install -y i3 picom polybar rofi kitty pipewire pipewire-pulseaudio brightnessctl feh python3-pip python3-i3ipc git jetbrains-mono-fonts-all
         install_autotiling
         ;;
     zypper)
         echo -e "${BLUE}Installing packages via zypper...${NC}"
-        sudo zypper refresh
-        sudo zypper install -y i3 picom polybar rofi kitty pipewire pipewire-pulseaudio brightnessctl feh python3-pip python3-i3ipc git jetbrains-mono-fonts
+        $SUDO zypper refresh
+        $SUDO zypper install -y i3 picom polybar rofi kitty pipewire pipewire-pulseaudio brightnessctl feh python3-pip python3-i3ipc git jetbrains-mono-fonts
         install_autotiling
         ;;
     xbps)
         echo -e "${BLUE}Installing packages via xbps...${NC}"
-        sudo xbps-install -S i3 picom polybar rofi kitty pipewire pipewire-pulse brightnessctl feh python3-pip python3-i3ipc git nerd-fonts
+        $SUDO xbps-install -S i3 picom polybar rofi kitty pipewire pipewire-pulse brightnessctl feh python3-pip python3-i3ipc git nerd-fonts
+        install_autotiling
+        ;;
+    apk)
+        echo -e "${BLUE}Installing packages via apk...${NC}"
+        $SUDO apk update
+        $SUDO apk add i3wm picom polybar kitty pipewire pipewire-pulse brightnessctl feh py3-pip py3-i3ipc git font-jetbrains-mono-nerd
+        $SUDO apk add rofi-x11-wayland 2>/dev/null || $SUDO apk add rofi 2>/dev/null || true
         install_autotiling
         ;;
     *)
@@ -92,7 +109,7 @@ fi
 for dir in i3 kitty picom polybar rofi; do
     if [ -d "$RICE_DIR/$dir" ]; then
         if [ -d "$CONFIG_DIR/$dir" ] && [ ! -w "$CONFIG_DIR/$dir" ]; then
-            sudo chown -R $USER:$USER "$CONFIG_DIR/$dir" 2>/dev/null || true
+            $SUDO chown -R $USER:$USER "$CONFIG_DIR/$dir" 2>/dev/null || true
         fi
         cp -r "$RICE_DIR/$dir" "$CONFIG_DIR/"
     fi
